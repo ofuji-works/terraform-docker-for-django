@@ -13,3 +13,9 @@ terraform init
 ```
 ./build.sh
 ```
+
+3. Application end
+
+```
+terraform destroy
+```
