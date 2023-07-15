@@ -35,7 +35,7 @@ resource "docker_container" "application" {
     volume_name    = docker_volume.app_volume.name
     read_only      = false
   }
-  command      = ["python3 manage.py runserver 0.0.0.0:8000"]
+  command      = ["python manage.py migrate", "python3 manage.py runserver 0.0.0.0:8000"]
   network_mode = "bridge"
   networks_advanced {
     name = docker_network.private.name
