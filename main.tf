@@ -23,9 +23,12 @@ resource "docker_network" "private" {
 }
 
 resource "docker_container" "application" {
-  image    = var.image_name
-  name     = "application"
-  hostname = "application"
+  image       = var.image_name
+  name        = "application"
+  hostname    = "application"
+  working_dir = "/code"
+  command     = ["./healthcheck.sh"]
+
   ports {
     internal = 8000
     external = 8000
@@ -35,12 +38,10 @@ resource "docker_container" "application" {
     volume_name    = docker_volume.app_volume.name
     read_only      = false
   }
-  command      = ["python manage.py migrate", "python3 manage.py runserver 0.0.0.0:8000"]
   network_mode = "bridge"
   networks_advanced {
     name = docker_network.private.name
   }
-  depends_on = [docker_container.db]
 }
 
 resource "docker_container" "db" {
@@ -53,8 +54,8 @@ resource "docker_container" "db" {
     "TZ=Asia/Tokyo"
   ]
   ports {
-    internal = 80
-    external = 8080
+    internal = 3306
+    external = 3306
   }
   volumes {
     container_path = "/var/lib/mysql"
